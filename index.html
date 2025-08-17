@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Notes Manager</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="center">
+    <h1>Notes Manager</h1>
+    <form id="noteform" >
+      <input type="text" id="noteinput" placeholder="Enter your topic">
+      <button id="submit">Submit</button>
+    </form>
+  
+    <div id="notescontentarea" style="display:none;margin-top: 20px;">
+      <textarea id="notecontent" placeholder="Write your notes here" rows="6" cols="22"></textarea>
+      <button id="savebtn">Save Notes</button>
+      <button id="dishistory">Show History</button>
+    </div>
+  </div>
+</body>
+<script>
+  const noteform=document.getElementById('noteform');
+  const noteinput=document.getElementById('noteinput');
+  const notescontentarea=document.getElementById('notescontentarea');
+  const notecontent=document.getElementById('notecontent');
+  const savebtn=document.getElementById('savebtn');
+  const dishistory=document.getElementById('dishistory');
+
+  noteform.addEventListener('submit',function(e){
+    e.preventDefault();
+    const topic=noteinput.value.trim();
+    if(topic==='')return;
+    notescontentarea.style.display="block";
+  })
+savebtn.addEventListener("click",async function(){
+  const topic=noteinput.value.trim();
+  const content=notecontent.value.trim();
+  if(topic===''||content==='')
+{
+  alert("please enter both topic and content")
+  return;
+}
+await fetch("/notes",{
+  method:'post',
+  headers:{'content-type':'application/json'},
+    body:JSON.stringify({topic,content})
+  
+});
+
+
+
+
+
+noteinput.value='';
+notecontent.value='';
+notescontentarea.style.display="none";
+});
+dishistory.addEventListener("click",function(){
+  window.location.href="/history"});
+
+
+
+</script>
+</html>

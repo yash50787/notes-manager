@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Notes History</title>
+</head>
+<body>
+  <h1>Notes History</h1>
+
+  <table border="1">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Topic</th>
+        <th>Content</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody id="notesbody"></tbody>
+  </table>
+
+  <script>
+    const notesbody = document.getElementById("notesbody");
+
+    async function fetchNotes() {
+      const res = await fetch('/notes');
+      const notes = await res.json();
+      notesbody.innerHTML = '';
+
+      notes.forEach((note, index) => {
+        const row = document.createElement("tr");
+
+        row.innerHTML = `
+          <td>${index + 1}</td>
+          <td>${note.topic}</td>
+          <td>${note.content}</td>
+          <td>
+            <button onclick="editNote('${note._id}', '${note.topic}', '${note.content}')">Edit</button>
+            <button onclick="deleteNote('${note._id}')">Delete</button>
+          </td>
+        `;
+
+        notesbody.appendChild(row);
+      });
+    }
+
+    async function deleteNote(id) {
+      const confirmDelete = confirm("Are you sure you want to delete this note?");
+      if (!confirmDelete) return;
+
+      await fetch(`/notes/${id}`, { method: 'DELETE' });
+      fetchNotes();
+    }
+
+    async function editNote(id, oldTopic, oldContent) {
+      const newTopic = prompt("Edit Topic:", oldTopic);
+      const newContent = prompt("Edit Content:", oldContent);
+
+      if (!newTopic || !newContent) {
+        alert("Topic and Content cannot be empty.");
+        return;
+      }
+
+      await fetch(`/notes/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ topic: newTopic.trim(), content: newContent.trim() })
+      });
+
+      fetchNotes();
+    }
+
+    fetchNotes();
+  </script>
+</body>
+</html>

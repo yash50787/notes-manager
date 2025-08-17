@@ -1,0 +1,24 @@
+*{
+margin:0px;
+padding:0px;
+}
+
+h1{
+    color:brown;
+}
+   
+.center{
+height: 70vh;
+ 
+    display:flex;
+    color: #fff;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    background-color: black;
+    font:0.2rem;
+}
+#btn:hover{
+    color:white;
+    background-color: black;
+}
